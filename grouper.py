@@ -7,7 +7,7 @@ from google.auth.transport.requests import Request
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-SPREADSHEET_ID = '13W5cjUqM7-aB0OxtwMmF-cQGIKjeo8v_aHyOGZzhG1A'
+SPREADSHEET_ID = '1JaTm6_w0_aX_inMRZcq0w91HRcPZiW0KPhSbSIBObOI'
 RANGES = {'time_name':'A2:B', 'city':'E2:E', 'group':'F2:F'}
 RANGE_NAMES = [RANGES['time_name'], RANGES['city'], RANGES['group']]
 value_render_option = 'UNFORMATTED_VALUE'
@@ -62,18 +62,6 @@ def main():
 		for item in valueRanges[0][values]:
 			time[time.index(item)] = item[0]
 			name[name.index(item)] = item[1]
-		
-		# Remove any users that are already in a group
-		# indicies = []
-		# for item in groups:
-			# if item is not -1:
-				# indicies.append(groups.index(item))
-		
-		# for index in indicies:
-			# del groups[index]
-			# del city[index]
-			# del time[index]
-			# del name[index]
 		
 		# Group ungrouped users
 		for index, item in enumerate(city):
