@@ -44,20 +44,38 @@
     <div class="col-lg-12">
       <h2>COVID 19 Emergency Relief Project</h2>
       <p>
-		Hello, We are in this unique crisis together and we are here to help. Please fill out the form below. Once we receive it we will call you with in 24 hours to let you know when the home delivery will be done. The volunteer is going to drop the food package in front of your door and will either ring your bell and leave or will call you after they leave to let you know that it has been dropped. We can give you a window of time as to when to expect delivery
+		Hello, We are in this unique crisis together and we are here to help. Please fill out the form below once we receive it we will place it in our sheet. Delivery will go according to the order the request was received.  The volunteer is going to drop the food package in front of your door and will either ring your bell and leave or will call you after they leave to let you know that it has been dropped.
 	  <p>
     </div>
   </div>
   <hr>
   <form class="form-horizontal" role="form" id="test-form">
     <div class="form-group">
-      <label class="col-lg-3 control-label">Name</label>
+      <label class="col-lg-3 control-label">First Name</label>
       <div class="col-lg-3 inputGroupContainer">
         <div class="input-group">
-          <input type="text" class="form-control" name="Name" placeholder="First Last"/>
+          <input type="text" class="form-control" name="First Name" placeholder="First Name"/>
         </div>
       </div>
     </div>
+
+	<div class="form-group">
+      <label class="col-lg-3 control-label">Last Name</label>
+      <div class="col-lg-3 inputGroupContainer">
+        <div class="input-group">
+          <input type="text" class="form-control" name="Last Name" placeholder="Last Name"/>
+        </div>
+      </div>
+    </div>
+
+	<div class="form-group">
+		<label class="col-lg-3 control-label">What is the total amount of people living in your household?</label>
+		<div class="col-lg-3 inputGroupContainer">
+			<div class = "input-group">
+				<input type="text" class="form-control" name="household-size" onchange="addHouseMembers(this);"/>
+			</div>
+		</div>
+	</div>
 
     <div class="form-group">
       <label class="col-lg-3 control-label">Street Address</label>
@@ -160,15 +178,6 @@
 					<option value="native-american">American Indian/Alaskan Native</option>
 					<option value="pacific-islander">Native Hawaiian/Pacific Islander</option>
 				</select>
-			</div>
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<label class="col-lg-3 control-label">What is the total amount of people living in your household?</label>
-		<div class="col-lg-3 inputGroupContainer">
-			<div class = "input-group">
-				<input type="text" class="form-control" name="household-size" onchange="addHouseMembers(this);"/>
 			</div>
 		</div>
 	</div>

@@ -8,7 +8,7 @@ $(document).ready(function() {
             validating: 'glyphicon glyphicon-refresh'
         },        
         fields: {
-            Name: {
+            "First Name": {
              message: 'The first name is not valid',
                 validators: {
                     notEmpty: {
@@ -18,11 +18,42 @@ $(document).ready(function() {
                         min: 1,
                         max: 30,
                         message: 'The first name must be more than 1 and less than 30 characters long'
-                    }/*,
+                    },
                     regexp: {
-                        regexp: /^[A-z]+$/,
+                        regexp: /^[a-zA-Z ]*$/,
                         message: 'The first name can only accept alphabetical input'
-                    },*/
+                    },
+                }
+            },
+			"Last Name": {
+             message: 'The last name is not valid',
+                validators: {
+                    notEmpty: {
+                        message: 'The last name is required and cannot be empty'
+                    },
+                    stringLength: {
+                        min: 1,
+                        max: 30,
+                        message: 'The last name must be more than 1 and less than 30 characters long'
+                    },
+					regexp: {
+                        regexp: /^[a-zA-Z ]*$/,
+                        message: 'The last name can only accept alphabetical input'
+                    },
+                }
+            },
+			"household-size": {
+             message: 'The household size is not valid',
+                validators: {
+                    notEmpty: {
+                        message: 'The household size is required and cannot be empty'
+                    },
+                    between: {
+						inclusive: true,
+						min: 1,
+						max: 20,
+						message: 'Household size must be a number between 1 and 20'
+					}
                 }
             },
             "Street Address": {
@@ -30,7 +61,23 @@ $(document).ready(function() {
                 validators: {
                     notEmpty: {
                         message: 'Address is required and cannot be empty'
-                    }
+                    },
+					rexexp:{
+						regexp: /^[a-zA-Z\d ]*$/,
+						message: 'Street address can only accept alphanumeric input'
+					}
+                }
+            },
+			"Apartment/lot number": {
+                message: 'Address is not valid',
+                validators: {
+                    notEmpty: {
+                        message: 'Address is required and cannot be empty'
+                    },
+					rexexp:{
+						regexp: /^[a-zA-Z\d ]*$/,
+						message: 'Apartment number can only accept alphanumeric input'
+					}
                 }
             },
 			"Zip code": {
@@ -82,7 +129,7 @@ $(document).ready(function() {
 
         // Use Ajax to submit form data
         var url = 'https://script.google.com/macros/s/AKfycbwR2oJeXmuD4hI4QUKr8QE-dZIInYmzsXRJH422DhJBJFlWEgY/exec';
-        var redirectUrl = '#';
+        var redirectUrl = 'success-page.html';
         // show the loading 
         $('#postForm').prepend($('<span></span>').addClass('glyphicon glyphicon-refresh glyphicon-refresh-animate'));
         var jqxhr = $.get(url, $form.serialize(), function(data) {
@@ -91,7 +138,6 @@ $(document).ready(function() {
         })
             .fail(function(data) {
                 console.warn("Error! Data: " + data.statusText);
-                // HACK - check if browser is Safari - and redirect even if fail b/c we know the form submits.
                 if (navigator.userAgent.search("Safari") >= 0 && navigator.userAgent.search("Chrome") < 0) {
                     //alert("Browser is Safari -- we get an error, but the form still submits -- continue.");
                     $(location).attr('href',redirectUrl);                
@@ -105,7 +151,6 @@ $(document).ready(function() {
         })
             .fail(function(data) {
                 console.warn("Error! Data: " + data.statusText);
-                // HACK - check if browser is Safari - and redirect even if fail b/c we know the form submits.
                 if (navigator.userAgent.search("Safari") >= 0 && navigator.userAgent.search("Chrome") < 0) {
                     //alert("Browser is Safari -- we get an error, but the form still submits -- continue.");
                     $(location).attr('href',redirectUrl);                
@@ -129,6 +174,7 @@ function addHouseMembers(that){
 		var input = document.createElement("input");
 		input.type = "text";
 		input.name = "member" + i + "_name";
+		input.pattern = "/^[a-zA-Z ]*$/";
 		family.appendChild(input);
 		family.appendChild(document.createElement("br"));
 		
@@ -145,6 +191,7 @@ function addHouseMembers(that){
 		input = document.createElement("input");
 		input.type = "text";
 		input.name = "member" + i + "_relationship";
+		input.pattern = "/^[a-zA-Z ]*$/";
 		family.appendChild(input);
 		family.appendChild(document.createElement("br"));
 		
@@ -157,22 +204,22 @@ function addHouseMembers(that){
 			options.push(document.createElement("option"));
 		}
 		options[0].text = "Black (Not of Hispanic Origin)"; 
-		options[0].name = "black";
+		options[0].value = "black";
 		
 		options[1].text = "White (Not of Hispanic Origin)";
-		options[1].name = "white";
+		options[1].value = "white";
 		
 		options[2].text = "Asian";
-		options[2].name = "asian";
+		options[2].value = "asian";
 		
 		options[3].text = "Hispanic";
-		options[3].name = "hispanic";
+		options[3].value = "hispanic";
 		
 		options[4].text = "American Indian/Alaskan Native";
-		options[4].name = "native-american";
+		options[4].value = "native-american";
 		
 		options[5].text = "Native Hawaiian/Pacific Islander";
-		options[5].name = "pacific-islander";
+		options[5].value = "pacific-islander";
 		
 		for(var ii = 0; ii < options.length; ii++){
 			selection.appendChild(options[ii]);

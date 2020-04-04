@@ -8,9 +8,45 @@ from flask import Flask, request
 br = None
 
 app = Flask(__name__)
-@app.route('/', methods=['GET','POST'])
+@app.route('/', methods=['POST'])
 def parse_request():
-	print(request.values)
+	data = {'firstname':'', 'lastname':'', 'homeless':0, 'household_total':'', 'street_address':'', 'apartment':'', 'city':'', 'state':'SC', 'zipcode':'', 'phone':'', 'gender':'', 'dob':'', 'race':'', 'cf_guests_f69d4306dd':'1', 'cf_guests_4c0fc7dc8e': '0.00', 'cf_guests_11521eb564':'1', 'cf_guests_48faabaf3f':'1', 'income1':'0.00', 'action':'Save', 'othersHousehold[]':''}
+	genders = {'Male':'1', 'Female':'2'}
+	races = {'black':'1', 'white':'2', 'asian':'4', 'hispanic':'3', 'native-american':'6', 'pacific-islander':'7'}
+	
+	for (key, value) in request.form.items():
+		data['firstname'] = value if key == 'First Name' else data['firstname']
+		data['lastname'] = value if key == 'Last Name' else data['lastname']
+		data['household_total'] = value if key == 'household-size' else data['household_total']
+		data['street_address'] = value if key == 'Street Address' else data['street_address']
+		data['apartment'] = value if key == 'Apartment/lot number' else data['apartment']
+		data['city'] = value if key == 'City' else data['city']
+		data['state'] = 'SC'
+		data['zipcode'] = value if key == 'Zip code' else data['zipcode']
+		data['phone'] = re.sub(r"\D", "", value) if key == 'Phone Number' else data['phone']
+		data['gender'] = genders[value] if key == 'gender' else data['gender']
+		data['dob'] = value if key == 'dob' else data['dob']
+		data['race'] = races[value] if key == 'race' else data['race']
+	
+	for i in range(1,int(data['household_total'])):
+		data['othersHousehold[' + str(i-1) + '][id]'] = str(i-1)
+		for (key, value) in request.form.items():
+			if key == 'member' + str(i) + '_name':
+				data['othersHousehold[' + str(i-1) + '][name]'] = value
+			if key == 'member' + str(i) + '_dob':
+				data['othersHousehold[' + str(i-1) + '][age]'] = value
+			if key == 'member' + str(i) + '_relationship':
+				data['othersHousehold[' + str(i-1) + '][rel]'] = value
+			if key == 'member' + str(i) + '_race':
+				data['othersHousehold[' + str(i-1) + '][race]'] = races[value]
+			if key == 'member' + str(i) + '_gender':
+				data['othersHousehold[' + str(i-1) + '][gender]'] = genders[value]
+	
+	x = returning_guest(data) is None
+	print(x)
+	if x:
+		print(data)
+		create_new_guest(data)
 	return(request.values)
 	
 def main():
@@ -60,39 +96,8 @@ def guest_list():
 # Format dob
 # dob = dob.split('/')[2] + '-' + dob.split('/')[0] + '-' + dob.split('/')[1]
 # Make sure all elements are str before passing to this function
-def create_new_guest(firstname, lastname, family_total, address, apartment, city, state, zip, phone, gender, dob, race, family_members):
-	genders = {'Male':'1', 'Female':'2'}
-	races = {'black':'1', 'white':'2', 'asian':'3', 'hispanic':'4', 'native-american':'5', 'pacific-islander':'6'}
-	
-	data = {}
-	data ['firstname'] = firstname
-	data['lastname'] = lastname
-	data['homeless'] = 0
-	data['household_total'] = family_total
-	for i, member in enumerate(family_members):
-		data['othersHousehold[' + str(i) + '][name]'] = family_members[i]['firstname'] + " " + family_members[i]['lastname']
-		data['othersHousehold[' + str(i) + '][age]'] = family_members[i]['dob']
-		data['othersHousehold[' + str(i) + '][rel]'] = family_members[i]['relationship']
-		data['othersHousehold[' + str(i) + '][race]'] = races[family_members[i]['race']]
-		data['othersHousehold[' + str(i) + '][gender]'] = genders[family_members[i]['gender']]
-		data['othersHousehold[' + str(i) + '][id]'] = str(i)
-	data['street_address'] = address
-	data['apartment'] = apartment
-	data['city'] = city
-	data['state'] = state
-	data['zipcode'] = zip
-	data['phone'] = re.sub(r"\D", "", str(phone))
-	data['gender'] = genders[gender]
-	data['dob'] = dob
-	data['race'] = races[race]
-	data['cf_guests_f69d4306dd'] = '0'
-	data['cf_guests_4c0fc7dc8e'] = '0.00'
-	data['cf_guests_11521eb564'] = '1'
-	data['cf_guests_48faabaf3f'] = '1'
-	data['income1'] = '0.00'
-	data['action'] = 'Save'
+def create_new_guest(data):
 	url = 'https://icnareliefusashifafreeclinic.soxbox.co/create-new-visit/guest/create/'
- 
 	x = mechanize.Request(url, data)
 	br.open(x)
 	
@@ -115,14 +120,14 @@ def create_new_visit(gid):
 #Note: Make sure that DOB is in the correct format
 #	yyyy-mm-dd
 #Make this case insensitive
-def returning_guest(firstname, lastname, dob, address):
+def returning_guest(data):
 	gid = None
 	for row in guest_list():
 		num = 0
-		num = num + 1 if row[1].lower() == firstname.lower() else num
-		num = num + 1 if row[3].lower() == lastname.lower() else num
-		num = num + 1 if row[4].lower() == dob else num
-		num = num + 1 if row[5].lower() == address.lower() else num
+		num = num + 1 if row[1].lower() == data['firstname'].lower() else num
+		num = num + 1 if row[3].lower() == data['lastname'].lower() else num
+		num = num + 1 if row[4].lower() == data['dob'] else num
+		num = num + 1 if row[5].lower() == data['street_address'].lower() else num
 		gid = row[0] if num >= 2 else gid
 	return gid
 
