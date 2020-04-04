@@ -63,13 +63,13 @@ def main():
 			time[time.index(item)] = item[0]
 			name[name.index(item)] = item[1]
 		
+		
 		# Group ungrouped users
-		for index, item in enumerate(city):
+		for index, item in enumerate(city):			
 			citygroups = list(zip(city,groups))
-			
 			# If there are 5 or more ungrouped requests in the same city...
 			if citygroups.count((item,-1)) >= 5 and groups[index] is -1:
-				# Find the next five and add them to the next group
+				# ...find the next five and add them to the next group
 				indices = [i for i, x in enumerate(city) if x == item and i >= index]
 				for ii in range(5):
 					groups[indices[ii]] = max_group + 1
