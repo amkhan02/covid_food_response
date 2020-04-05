@@ -4,7 +4,9 @@ import http.cookiejar
 import io
 import re
 import ast
+import json
 from flask import Flask, request
+
 br = None
 
 app = Flask(__name__)
@@ -15,6 +17,7 @@ def parse_request():
 	races = {'black':'1', 'white':'2', 'asian':'4', 'hispanic':'3', 'native-american':'6', 'pacific-islander':'7'}
 	
 	for (key, value) in request.form.items():
+		value = str(value)
 		data['firstname'] = value if key == 'First Name' else data['firstname']
 		data['lastname'] = value if key == 'Last Name' else data['lastname']
 		data['household_total'] = value if key == 'household-size' else data['household_total']
@@ -52,6 +55,8 @@ def parse_request():
 def main():
 	#Set up Browser
 	global br
+	deploy = False
+	
 	br = mechanize.Browser()
 	cj = http.cookiejar.LWPCookieJar()
 	br.set_cookiejar(cj)
@@ -66,8 +71,11 @@ def main():
 	#login
 	br.open('https://icnareliefusashifafreeclinic.soxbox.co/login')
 	br.select_form(nr = 0)
-	br.form['username'] = 'shifaclinic'
-	br.form['password'] = 'shifa@101'
+	
+	config = json.load(open('/etc/config.json')) if deploy else json.load(open('config.json'))
+		
+	br.form['username'] = config.get('username')
+	br.form['password'] = config.get('password')
 	br.submit()
 	
 	br.open('https://icnareliefusashifafreeclinic.soxbox.co/create-new-visit/')
