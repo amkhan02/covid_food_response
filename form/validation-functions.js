@@ -136,7 +136,7 @@ $(document).ready(function() {
 			url = 'https://script.google.com/macros/s/AKfycbyxMNusJI0snt3lSaQPWIMDKMH2DrMjQJXWBQYCb5dSlcikvCY/exec';
 		}
 		
-        var redirectUrl = 'success-page.html';
+        var redirectUrl = 'https://shifaclinics.com/thank-you';
         // show the loading 
         $('#postForm').prepend($('<span></span>').addClass('glyphicon glyphicon-refresh glyphicon-refresh-animate'));
         var jqxhr = $.get(url, $form.serialize(), function(data) {
@@ -186,7 +186,7 @@ function addHouseMembers(that){
 		var input = document.createElement("input");
 		input.type = "text";
 		input.name = "member" + i + "_name";
-		input.pattern = "/^[a-zA-Z ]*$/";
+		//input.pattern = "/^[a-zA-Z ]*$/";
 		family.appendChild(input);
 		family.appendChild(document.createElement("br"));
 		
@@ -203,7 +203,7 @@ function addHouseMembers(that){
 		input = document.createElement("input");
 		input.type = "text";
 		input.name = "member" + i + "_relationship";
-		input.pattern = "/^[a-zA-Z ]*$/";
+		//input.pattern = "/^[a-zA-Z ]*$/";
 		family.appendChild(input);
 		family.appendChild(document.createElement("br"));
 		
