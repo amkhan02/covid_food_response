@@ -12,10 +12,13 @@ br = None
 app = Flask(__name__)
 @app.route('/', methods=['POST'])
 def parse_request():
-	data = {'firstname':'', 'lastname':'', 'homeless':0, 'household_total':'', 'street_address':'', 'apartment':'', 'city':'', 'state':'SC', 'zipcode':'', 'phone':'', 'gender':'', 'dob':'', 'race':'', 'cf_guests_f69d4306dd':'1', 'cf_guests_4c0fc7dc8e': '0.00', 'cf_guests_11521eb564':'1', 'cf_guests_48faabaf3f':'1', 'income1':'0.00', 'action':'Save', 'othersHousehold[]':''}
+	data = {'firstname':'', 'lastname':'', 'homeless':0, 'household_total':'', 'street_address':'', 'apartment':'', 'city':'', 'state':'SC', 'zipcode':'', 'phone':'', 'gender':'', 'dob':'', 'race':'', 'cf_guests_f69d4306dd':'0','cf_guests_be9c267024':'1', 'cf_guests_4c0fc7dc8e': '0.00', 'cf_guests_11521eb564':'1', 'cf_guests_48faabaf3f':'1', 'income1':'0.00', 'action':'Save', 'othersHousehold[]':''}
 	genders = {'Male':'1', 'Female':'2'}
 	races = {'black':'1', 'white':'2', 'asian':'4', 'hispanic':'3', 'native-american':'6', 'pacific-islander':'7'}
-	
+	global br
+	if br is None:
+		setup()
+
 	for (key, value) in request.form.items():
 		value = str(value)
 		data['firstname'] = value if key == 'First Name' else data['firstname']
@@ -52,10 +55,10 @@ def parse_request():
 		create_new_guest(data)
 	return(request.values)
 	
-def main():
+def setup():
 	#Set up Browser
 	global br
-	deploy = False
+	deploy = True
 	
 	br = mechanize.Browser()
 	cj = http.cookiejar.LWPCookieJar()
@@ -72,7 +75,7 @@ def main():
 	br.open('https://icnareliefusashifafreeclinic.soxbox.co/login')
 	br.select_form(nr = 0)
 	
-	config = json.load(open('/etc/config.json')) if deploy else json.load(open('config.json'))
+	config = json.load(open('/etc/covid_food_response/config.json')) if deploy else json.load(open('config.json'))
 		
 	br.form['username'] = config.get('username')
 	br.form['password'] = config.get('password')
@@ -81,15 +84,21 @@ def main():
 	br.open('https://icnareliefusashifafreeclinic.soxbox.co/create-new-visit/')
 	br.open('https://icnareliefusashifafreeclinic.soxbox.co/create-new-visit/set-outreach/?id=config_1')
 	
+
+def main():
+	setup()
 	app.run()
-	#fam = [{'firstname':'husband', 'lastname':'herfer', 'dob':'1988-01-05', 'relationship':'husband', 'race':'hispanic', 'gender':'Male'}, {'firstname':'son1', 'lastname':'herfer', 'dob':'2013-05-08', 'relationship':'son', 'race':'hispanic', 'gender':'Male'}, {'firstname':'son2', 'lastname':'herfer', 'dob':'2015-09-18', 'relationship':'son', 'race':'hispanic', 'gender':'Male'}, {'firstname':'son3', 'lastname':'herfer', 'dob':'2019-04-26', 'relationship':'son', 'race':'hispanic', 'gender':'Male'}]
-	#create_new_guest('Silvia', 'Herfer', '5', '7121 Stall Road lot 31', '31', 'North Charleston', 'SC', '29406', '8438265194', 'Female', '1988-12-31', 'hispanic', fam)
-	
+
 	
 	
 def guest_list():
 	global br
-	br.open('https://icnareliefusashifafreeclinic.soxbox.co/reports/guests/guests/')
+	x = br.open('https://icnareliefusashifafreeclinic.soxbox.co/reports/guests/guests/')
+	
+	if x.geturl() is 'https://icnareliefusashifafreeclinic.soxbox.co/login':
+		setup()
+		br.open('https://icnareliefusashifafreeclinic.soxbox.co/reports/guests/guests/')
+
 	br.select_form(nr = 0)
 	csv_file = br.submit().read()
 	csv_file = csv_file.decode('utf-8')
