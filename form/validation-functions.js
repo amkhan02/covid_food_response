@@ -62,7 +62,7 @@ $(document).ready(function() {
                     notEmpty: {
                         message: 'Address is required and cannot be empty'
                     },
-					rexexp:{
+					regexp:{
 						regexp: /^[a-zA-Z\d ]*$/,
 						message: 'Street address can only accept alphanumeric input'
 					}
@@ -74,7 +74,7 @@ $(document).ready(function() {
                     notEmpty: {
                         message: 'Address is required and cannot be empty'
                     },
-					rexexp:{
+					regexp:{
 						regexp: /^[a-zA-Z\d ]*$/,
 						message: 'Apartment number can only accept alphanumeric input'
 					}
@@ -118,6 +118,8 @@ $(document).ready(function() {
         }
     })
     .on('success.form.bv', function(e) {
+		var deploy = true;
+		
         // Prevent form submission
         e.preventDefault();
 
@@ -129,6 +131,11 @@ $(document).ready(function() {
 
         // Use Ajax to submit form data
         var url = 'https://script.google.com/macros/s/AKfycbwR2oJeXmuD4hI4QUKr8QE-dZIInYmzsXRJH422DhJBJFlWEgY/exec';
+		
+		if(deploy){
+			url = 'https://script.google.com/macros/s/AKfycbyxMNusJI0snt3lSaQPWIMDKMH2DrMjQJXWBQYCb5dSlcikvCY/exec';
+		}
+		
         var redirectUrl = 'success-page.html';
         // show the loading 
         $('#postForm').prepend($('<span></span>').addClass('glyphicon glyphicon-refresh glyphicon-refresh-animate'));
@@ -144,7 +151,12 @@ $(document).ready(function() {
                 }
             });
 		
-		url = 'http://127.0.0.1:5000/'
+		url = 'http://127.0.0.1:5000/';
+		
+		if(deploy){
+			url = 'https://shifa-server.xyz';
+		}
+		
 		var jqxhr2 = $.post(url, $form.serialize(), function(data) {
             console.log("Success! Data: " + data.statusText);
             $(location).attr('href',redirectUrl);

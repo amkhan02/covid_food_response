@@ -15,6 +15,7 @@ def parse_request():
 	data = {'firstname':'', 'lastname':'', 'homeless':0, 'household_total':'', 'street_address':'', 'apartment':'', 'city':'', 'state':'SC', 'zipcode':'', 'phone':'', 'gender':'', 'dob':'', 'race':'', 'cf_guests_f69d4306dd':'1', 'cf_guests_4c0fc7dc8e': '0.00', 'cf_guests_11521eb564':'1', 'cf_guests_48faabaf3f':'1', 'income1':'0.00', 'action':'Save', 'othersHousehold[]':''}
 	genders = {'Male':'1', 'Female':'2'}
 	races = {'black':'1', 'white':'2', 'asian':'4', 'hispanic':'3', 'native-american':'6', 'pacific-islander':'7'}
+	print(request.headers)
 	
 	for (key, value) in request.form.items():
 		value = str(value)
@@ -46,10 +47,8 @@ def parse_request():
 				data['othersHousehold[' + str(i-1) + '][gender]'] = genders[value]
 	
 	x = returning_guest(data) is None
-	print(x)
 	if x:
-		print(data)
-		create_new_guest(data)
+		pass#create_new_guest(data)
 	return(request.values)
 	
 def main():
