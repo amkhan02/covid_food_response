@@ -116,7 +116,7 @@ def guest_list():
 def create_new_guest(data):
 	url = 'https://icnareliefusashifafreeclinic.soxbox.co/create-new-visit/guest/create/'
 	x = mechanize.Request(url, data)
-	br.open(x)
+	return br.open(x)
 	
 #Not Necessary, Unfinished
 def create_new_visit(gid):
