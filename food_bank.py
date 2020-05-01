@@ -6,6 +6,7 @@ import re
 import ast
 import json
 from flask import Flask, request
+from datetime import datetime as dt
 
 br = None
 
@@ -49,8 +50,9 @@ def parse_request():
 				data['othersHousehold[' + str(i-1) + '][gender]'] = genders[value]
 	
 	x = returning_guest(data) is None
-	print(x)
+	#print(x)
 	if x:
+		print(dt.now())
 		print(data)
 		create_new_guest(data)
 	return(request.values)
