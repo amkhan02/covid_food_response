@@ -5,7 +5,7 @@ import io
 import re
 import ast
 import json
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from datetime import datetime as dt
 
 br = None
@@ -13,7 +13,7 @@ br = None
 app = Flask(__name__)
 @app.route('/', methods=['POST'])
 def parse_request():
-	data = {'firstname':'', 'lastname':'', 'homeless':0, 'household_total':'', 'street_address':'', 'apartment':'', 'city':'', 'state':'SC', 'zipcode':'', 'phone':'', 'gender':'', 'dob':'', 'race':'', 'cf_guests_f69d4306dd':'0','cf_guests_be9c267024':'1', 'cf_guests_4c0fc7dc8e': '0.00', 'cf_guests_11521eb564':'1', 'cf_guests_48faabaf3f':'1', 'income1':'0.00', 'action':'Save', 'othersHousehold[]':''}
+	data = {'firstname':'', 'lastname':'', 'homeless':0, 'household_total':'', 'street_address':'', 'apartment':'', 'city':'', 'state':'SC', 'zipcode':'', 'county':'', 'phone':'', 'gender':'', 'dob':'', 'race':'', 'cf_guests_f69d4306dd':'0','cf_guests_be9c267024':'1', 'cf_guests_4c0fc7dc8e': '0.00', 'cf_guests_11521eb564':'1', 'cf_guests_48faabaf3f':'1', 'income1':'0.00', 'action':'Save', 'othersHousehold[]':''}
 	genders = {'Male':'1', 'Female':'2'}
 	races = {'black':'1', 'white':'2', 'asian':'4', 'hispanic':'3', 'native-american':'6', 'pacific-islander':'7'}
 	global br
@@ -30,6 +30,7 @@ def parse_request():
 		data['city'] = value if key == 'City' else data['city']
 		data['state'] = 'SC'
 		data['zipcode'] = value if key == 'Zip code' else data['zipcode']
+		data['county'] = value if key == 'county' else data['county']
 		data['phone'] = re.sub(r"\D", "", value) if key == 'Phone Number' else data['phone']
 		data['gender'] = genders[value] if key == 'gender' else data['gender']
 		data['dob'] = value if key == 'dob' else data['dob']
@@ -55,7 +56,9 @@ def parse_request():
 		print(dt.now())
 		print(data)
 		create_new_guest(data)
-	return(request.values)
+	retval = jsonify(request.values)
+	retval.headers.add('Access-Control-Allow-Origin', '*')
+	return retval
 	
 def setup():
 	#Set up Browser
