@@ -100,7 +100,7 @@ def guest_list():
 	global br
 	x = br.open('https://icnareliefusashifafreeclinic.soxbox.co/reports/guests/guests/')
 	
-	if x.geturl() is 'https://icnareliefusashifafreeclinic.soxbox.co/login':
+	if x.geturl() is not 'https://icnareliefusashifafreeclinic.soxbox.co/reports/guests/guests/':
 		setup()
 		br.open('https://icnareliefusashifafreeclinic.soxbox.co/reports/guests/guests/')
 
